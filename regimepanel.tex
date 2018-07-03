@@ -1,0 +1,132 @@
+\documentclass[12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{calc}
+\usepackage{setspace}
+\usepackage{multicol}
+\usepackage{fancyheadings}
+ 
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{rotating}
+\usepackage{harvard}
+\usepackage{aer}
+\usepackage{aertt}
+\usepackage{verbatim}
+\usepackage{array}
+\usepackage{multirow}
+
+\setlength{\voffset}{-0.25in}
+\setlength{\topmargin}{0pt}
+\setlength{\hoffset}{0pt}
+\setlength{\oddsidemargin}{0pt}
+\setlength{\headheight}{0pt}
+\setlength{\headsep}{.4in}
+\setlength{\marginparsep}{0pt}
+\setlength{\marginparwidth}{0pt}
+\setlength{\marginparpush}{0pt}
+\setlength{\footskip}{.1in}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{9.25in}
+\setlength{\parskip}{0pc}
+
+\renewcommand{\baselinestretch}{1.1}
+
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+\newcommand{\be}{\begin{enumerate}}
+\newcommand{\ee}{\end{enumerate}}
+\newcommand{\bd}{\begin{description}}
+\newcommand{\ed}{\end{description}}
+\newcommand{\prbf}[1]{\textbf{#1}}
+\newcommand{\prit}[1]{\textit{#1}}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bdm}{\begin{displaymath}}
+\newcommand{\edm}{\end{displaymath}}
+\newcommand{\script}[1]{\begin{cal}#1\end{cal}}
+\newcommand{\citee}[1]{\citename{#1} (\citeyear{#1})}
+\newcommand{\h}[1]{\hat{#1}}
+\newcommand{\ds}{\displaystyle}
+
+\newcommand{\app}
+{
+\appendix
+}
+
+\newcommand{\appsection}[1]
+{
+\let\oldthesection\thesection
+\renewcommand{\thesection}{Appendix \oldthesection}
+\section{#1}\let\thesection\oldthesection
+\renewcommand{\theequation}{\thesection\arabic{equation}}
+\setcounter{equation}{0}
+}
+
+\pagestyle{fancyplain}
+\lhead{}
+\chead{A Method for Estimating Panel Models With Regime Switching}
+\rhead{\thepage}
+\lfoot{}
+\cfoot{}
+\rfoot{}
+
+\begin{document}
+
+\begin{titlepage}
+\begin{singlespace}
+\title{A Method for Estimating Panel Models With Regime Switching\footnote{All errors are my own.}}
+\date{\today}
+\author{James Murray\footnote{\textit{Mailing address}: 1725 State St., La Crosse, WI  54601. \textit{Phone}: (608)785-5140.\newline  \textit{E-mail}: murray.jame@uwlax.edu.}\\Department of Economics\\University of Wisconsin - La Crosse
+}
+
+\maketitle
+
+\thispagestyle{empty}
+
+\abstract{A model and estimation method is suggested that marries standard panel regression techniques common in microeconometrics to standard Markov-switching methods common in time series econometrics.  I extend estimation methods for standard panel data regression models to allow for regime switching across time for regression coefficients and/or the variance of the error term.  The model assumes that when a parameter changes regime, it happens symmetrically and at the same time to all individuals in the panel; and regime changes evolve exogenously according to a Markov switching process.  Since regime switching is exogenous, one may assume unknown or unobservable factors that affect the whole economy influence magnitudes of one or more parameters in the regression model.  Likelihood functions are derived for pooled, random effects, and fixed effects models, and an expectations / maximization (EM) method is suggested as one way to compute the maximimum likelihood estimates.  Applications for the method in labor market research are suggested but left to future research.} \newline 
+
+\noindent \textit{Keywords}: Regime switching, panel, random effects, fixed effects. \\
+\noindent \textit{JEL classification}: C13, C22, C23.
+\end{singlespace}
+\end{titlepage}
+
+\newpage
+
+\section{Pooled Regression}
+The most simple panel data model is the pooled regression model.  As such it the most straightforward model to extend to allow for regime switching and it provides and nice starting point.  Consider the following pooled regression model with regime switching,
+\beq y_{i,t} = x_{i,t}'\beta(s_t) + e_{i,t}, \eeq
+where subscript $i$ denotes a given individual, subscript $t$ denotes a given time period, $x_{i,t}$ is a vector of explanatory variables that may include both variables that vary across time for an individual and variables that remain constant over time.  The regime state is given by $s_t \in \{1,..,S\}$ where $S$ is the number of regimes.  The vector of coefficients is given by $\beta(s_t) = \beta_k \mbox{ if } s_t=k$, and the error term is independently and identically normally distributed, $e_{i,t} \sim N[0, \sigma(s_t)]$, where the standard deviation is given by $\sigma(s_t) = \sigma_k \mbox{ if } s_t=k$.  The regime state, $s_t$, evolves according to the Markov chain, $P(s_t=k~|~s_{t-1}=j, \Psi_{t-1}) = p_{jk}$, where $p_{jk}$ denotes the probability the economy switches from state $j$ to state $k$ as time enters period $t$ and is another parameter to be estimated along with the other regression parameters, and $\Psi_{t-1}$ simply denotes all information up through period $t-1$.
+
+Given the error term $e_{i,t}$ is normally distributed, if $s_t=k$ was known, the probability density function for $y_{i,t}$ is given by,
+\beq \label{eq:fyit} f(y_{i,t}~|~s_t=k, \Psi_{t-1}) = \frac{1}{\sqrt{2\pi\sigma_k^2}} exp \left\{ - \frac{\left(y_{i,t} - x_{i,t}'\beta_k\right)^2}{2 \sigma_k^2} \right\}. \eeq
+
+\subsection{Filtering}
+The filtering method for evaluating the unconditional joint density function, $f(y_{t} ~|~ \Psi_{t-1})$ mirrors quite closely the iterative method suggested by \citee{hamilton1989}, where $y_t$ denotes the set of observations for every individual at period $t$, $y_t \equiv \{y_{1,t}, y_{2,t}, ..., y_{n_t,t}\}$, and $n_t$ is the number of individual for which data is available at time $t$.  Each iteration begin with the input $P(S_{t-1}=j | \Psi_{t-1}$ for every $j\in\{1,...,S\}$ and has the output $P(S_t=k | \Psi_t)$ and the process requires an initial condition for $P(S_0=j)$.  The filtering procedure takes as given the parameters $\beta_k$, $\sigma_k$, and $p_{jk}$ for all $j,k$.  Maximum likelihood estimates for these parameters can be obtained by maximizing the the joint density function for all the data (the output from the filtering procedure) with respect to these parameters.  The filtering alorithm follows these steps:
+
+\bi
+\item Step 1: Find probabilities for being in each regime in time $t$, given information up through period $t-1$.  These probabilities are given by,
+\bdm P(s_t=k~|~\Psi_{t-1}) = \sum_{j=0}^{S} P(s_t=k | s_{t-1}=j) P(s_{t-1}=j | \Psi_{t-1}), \edm
+where $P(s_t=k | s_{t-1}=j) \equiv p_{jk}$ is the Markov switching parameter, and $P(s_{t-1}=j | \Psi_{t-1})$ is known from the previous iteration (or initial condition).
+
+\item Step 2: Evaluate the conditional joint density function $f(y_t ~|~ \Psi_{t-1})$ which is computed by evaulating the following successive densities:
+\bdm \begin{array}{l} \ds f(y_t ~|~ s_t=k, \Psi_{t-1}) = \prod_{i=1}^{n_t} f(y_{i,t} ~|~ s_t=k, \Psi_{t-1}), \\ [1pc]
+\ds f(y_t ~|~ \Psi_{t-1}) = \sum_{k=1}^{S} f(y_t ~|~ s_t=k, \Psi_{t-1}) P(s_t=k ~|~ \Psi_{t-1}). \end{array} \edm
+The first equation is valid since $e_{i,t}$ and $e_{i',t}$ are independent for $i\neq i'$, and the density $f(y_{i,t} ~|~ s_t=k, \Psi_{t-1})$ is given in equation (\ref{eq:fyit}).  In the second equation $P(s_t=k ~|~ \Psi_{t-1})$ is given from step 1.
+
+\item Step 3: Evaluate the updated probability for being in each regime in time $t$, given information up through period $t-1$.  These probabilities are given by,
+\bdm \begin{array}{ll} \ds P(s_t=k~|~\Psi_{t}) & \ds = P(s_t=k~|~y_t, \Psi_{t-1}) = \frac{f(y_t, s_t=k | \Psi_{t-1})}{f(y_t | \Psi_{t-1})} \\ [2pc]
+ & \ds = \frac{f(y_t ~|~ s_t=k, \Psi_{t-1}) P(s_t=k | \Psi_{t-1})}{f(y_t|\Psi_{t-1})}, \end{array} \edm
+where the densities and probability needed to evaluate the second line are given in steps 1 and 2.
+
+\item Step 4: Return to step 1 until $t=T$, where $T$ is the number of periods in the sample.
+\ei
+
+The joint distribution for all the data is given by,
+\beq \label{eq:jointden} f(y^T | \Psi_{T-1}) = \prod_{t=1}^{T} f(y_t ~|~ \Psi_{t-1}), \eeq
+where $f(y_t ~|~ \Psi_{t-1})$ is given from step 2.  Taking logs, this can be transformed to the log-likelihood function,
+\beq \label{eq:loglik} l(y^T) = \sum_{t=1}^{T} \log \left( f(y_t ~|~ \Psi_{t-1}) \right). \eeq
+Numerican maximization methods can be used on equation (\ref{eq:loglik}) to obtain maximum likelihood methods.  The joint density function given in equation (\ref{eq:jointden}) can be used to obtain Bayesian estimates using Monte Carlo simulation methods such as the Gibbs sampler.
+
+\end{document}
+
+
